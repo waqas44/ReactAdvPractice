@@ -12,7 +12,8 @@ function App() {
     if (storedUserLoggedInInformation === '1') {
       setIsLoggedIn(true);
     }
-  }
+    console.log('from useefect');
+  }, []
   );
 
 
