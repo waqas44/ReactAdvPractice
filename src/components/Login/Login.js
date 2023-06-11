@@ -16,7 +16,7 @@ const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
   //This state will check if form is valid I mean above to boxes have passed the validity
 
-  const validationHandler = useEffect(() => {
+  useEffect(() => {
     setFormIsValid(
       enteredEmail.includes('@') && enteredPassword.trim().length > 6
     );
@@ -41,14 +41,14 @@ const Login = (props) => {
     console.log('Running from passwordChangeHandler');
   };
 
-  // const validateEmailHandler = () => {
-  //   setEmailIsValid(enteredEmail.includes('@'));
-  // };
+  const validateEmailHandler = () => {
+    setEmailIsValid(enteredEmail.includes('@'));
+  };
   //Validemailhandler will execute once we leave the mouse from input field, while setemailisvalid will return true or false based on other state value after checking @ symbol
 
-  // const validatePasswordHandler = () => {
-  //   setPasswordIsValid(enteredPassword.trim().length > 6);
-  // };
+  const validatePasswordHandler = () => {
+    setPasswordIsValid(enteredPassword.trim().length > 6);
+  };
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -68,7 +68,7 @@ const Login = (props) => {
             id="email"
             value={enteredEmail}
             onChange={emailChangeHandler}
-            onBlur={validationHandler}
+            onBlur={validateEmailHandler}
           />
         </div>
         <div
@@ -81,7 +81,7 @@ const Login = (props) => {
             id="password"
             value={enteredPassword}
             onChange={passwordChangeHandler}
-            onBlur={validationHandler}
+            onBlur={validatePasswordHandler}
           />
         </div>
         <div className={classes.actions}>
