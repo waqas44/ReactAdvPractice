@@ -17,9 +17,16 @@ const Login = (props) => {
   //This state will check if form is valid I mean above to boxes have passed the validity
 
   useEffect(() => {
-    setFormIsValid(
-      enteredEmail.includes('@') && enteredPassword.trim().length > 6
-    );
+    const idendifier = setTimeout(() => {
+      setFormIsValid(
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6
+      )
+    }, 500);
+
+
+
+
+
   }, [enteredEmail, enteredPassword]);
 
 
