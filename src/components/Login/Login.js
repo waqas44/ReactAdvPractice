@@ -18,25 +18,28 @@ const Login = (props) => {
 
   useEffect(() => {
     const idendifier = setTimeout(() => {
+      console.log('Running from Setitmeout');
       setFormIsValid(
         enteredEmail.includes('@') && enteredPassword.trim().length > 6
       )
-    }, 500);
+    }, 1000);
 
-
-
-
+    return (() => {
+      clearTimeout(idendifier);
+      console.log('CLEAnup from settimeout');
+    }
+    )
 
   }, [enteredEmail, enteredPassword]);
 
 
-  console.log('Running from APP');
+  // console.log('Running from APP');
   const emailChangeHandler = (event) => {
     //This function will execute on every key type and will set new values to email state and form valid state
     let abc = setEnteredEmail(event.target.value);
     console.log(event.target.value);
 
-    console.log('Running from emailChangeHandler');
+    // console.log('Running from emailChangeHandler');
 
     // Setformisvalid State will keep returning true or false based on values receive from props (not based on previous state) 
   };
@@ -45,7 +48,7 @@ const Login = (props) => {
     setEnteredPassword(event.target.value);
 
 
-    console.log('Running from passwordChangeHandler');
+    // console.log('Running from passwordChangeHandler');
   };
 
   const validateEmailHandler = () => {
@@ -61,7 +64,7 @@ const Login = (props) => {
     event.preventDefault();
     props.onLogin(enteredEmail, enteredPassword);
   };
-  console.log('Running from APP End');
+  // console.log('Running from APP End');
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
