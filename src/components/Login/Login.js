@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+
+const emailReducer = (state, action) => {
+  return ({ value: '', isValid: false })
+};
+
 
 const Login = (props) => {
   const [enteredEmail, setEnteredEmail] = useState('');
@@ -16,11 +21,13 @@ const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
   //This state will check if form is valid I mean above to boxes have passed the validity
 
+
+  const [emailState, emailDispatcher] = useReducer(emailReducer, { value: '', isValid: false });
   useEffect(() => {
     const idendifier = setTimeout(() => {
       console.log('Running from Setitmeout');
       setFormIsValid(
-        enteredEmail.includes('@') && enteredPassword.trim().length > 6
+        emailState.value.includes('@') && enteredPassword.trim().length > 6
       )
     }, 1000);
 
@@ -52,7 +59,7 @@ const Login = (props) => {
   };
 
   const validateEmailHandler = () => {
-    setEmailIsValid(enteredEmail.includes('@'));
+    setEmailIsValid(emailState.value.includes('@'));
   };
   //Validemailhandler will execute once we leave the mouse from input field, while setemailisvalid will return true or false based on other state value after checking @ symbol
 
