@@ -1,67 +1,74 @@
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 
 const emailReducer = (state, action) => {
-  return ({ value: '', isValid: false })
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.includes('@') };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+  return { value: '', isValid: false };
+
+  //  //If any action comes to this state (emailReducer) then it will return the value as per Action type. if Action type not exist than it will return this default value or object
 };
 
-
 const Login = (props) => {
-  const [enteredEmail, setEnteredEmail] = useState('');
-  //This state will collect all the Info typed into email Box, And combine them. 
-  const [emailIsValid, setEmailIsValid] = useState();
-  //This state will check if email is valid or at the rate of @ symbol exist in email
+  // const [enteredEmail, setEnteredEmail] = useState('');
+  // const [emailIsValid, setEmailIsValid] = useState();
   const [enteredPassword, setEnteredPassword] = useState('');
-  // This state will keep collecting all the info type in password box
   const [passwordIsValid, setPasswordIsValid] = useState();
-  //This state will check the password validity in term of password length
   const [formIsValid, setFormIsValid] = useState(false);
-  //This state will check if form is valid I mean above to boxes have passed the validity
 
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+  });
 
-  const [emailState, emailDispatcher] = useReducer(emailReducer, { value: '', isValid: false });
   useEffect(() => {
-    const idendifier = setTimeout(() => {
-      console.log('Running from Setitmeout');
-      setFormIsValid(
-        emailState.value.includes('@') && enteredPassword.trim().length > 6
-      )
-    }, 1000);
+    console.log('EFFECT RUNNING');
 
-    return (() => {
-      clearTimeout(idendifier);
-      console.log('CLEAnup from settimeout');
-    }
-    )
+    return () => {
+      console.log('EFFECT CLEANUP');
+    };
+  }, []);
 
-  }, [enteredEmail, enteredPassword]);
+  // useEffect(() => {
+  //   const identifier = setTimeout(() => {
+  //     console.log('Checking form validity!');
+  //     setFormIsValid(
+  //       enteredEmail.includes('@') && enteredPassword.trim().length > 6
+  //     );
+  //   }, 500);
 
+  //   return () => {
+  //     console.log('CLEANUP');
+  //     clearTimeout(identifier);
+  //   };
+  // }, [enteredEmail, enteredPassword]);
 
-  // console.log('Running from APP');
   const emailChangeHandler = (event) => {
-    //This function will execute on every key type and will set new values to email state and form valid state
-    let abc = setEnteredEmail(event.target.value);
-    console.log(event.target.value);
+    dispatchEmail({type: 'USER_INPUT', val: event.target.value});
 
-    // console.log('Running from emailChangeHandler');
-
-    // Setformisvalid State will keep returning true or false based on values receive from props (not based on previous state) 
+    setFormIsValid(
+      event.target.value.includes('@') && enteredPassword.trim().length > 6
+    );
   };
 
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
 
-
-    // console.log('Running from passwordChangeHandler');
+    setFormIsValid(
+      emailState.isValid && event.target.value.trim().length > 6
+    );
   };
 
   const validateEmailHandler = () => {
-    setEmailIsValid(emailState.value.includes('@'));
+    dispatchEmail({type: 'INPUT_BLUR'});
   };
-  //Validemailhandler will execute once we leave the mouse from input field, while setemailisvalid will return true or false based on other state value after checking @ symbol
 
   const validatePasswordHandler = () => {
     setPasswordIsValid(enteredPassword.trim().length > 6);
@@ -69,28 +76,30 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    props.onLogin(emailState.value, enteredPassword);
   };
-  // console.log('Running from APP End');
+
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
         <div
-          className={`${classes.control} ${emailIsValid === false ? classes.invalid : ''
-            }`}
+          className={`${classes.control} ${
+            emailState.isValid === false ? classes.invalid : ''
+          }`}
         >
           <label htmlFor="email">E-Mail</label>
           <input
             type="email"
             id="email"
-            value={enteredEmail}
+            value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
         </div>
         <div
-          className={`${classes.control} ${passwordIsValid === false ? classes.invalid : ''
-            }`}
+          className={`${classes.control} ${
+            passwordIsValid === false ? classes.invalid : ''
+          }`}
         >
           <label htmlFor="password">Password</label>
           <input
@@ -107,12 +116,8 @@ const Login = (props) => {
           </Button>
         </div>
       </form>
-
-
     </Card>
   );
-
-
 };
 
 export default Login;
