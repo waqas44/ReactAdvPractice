@@ -43,14 +43,16 @@ const Login = (props) => {
   const [emailState, dispatchEmail] = useReducer(emailReducer, { value: '', isValid: null });
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, { value: '', isValid: null });
 
-  useEffect(() => {
-    console.log('EFFECT RUNNING');
+  // useEffect(() => {
+  //   console.log('EFFECT RUNNING');
 
-    return () => {
-      console.log('EFFECT CLEANUP');
-    };
-  }, []);
+  //   return () => {
+  //     console.log('EFFECT CLEANUP');
+  //   };
+  // }, []);
 
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -64,7 +66,7 @@ const Login = (props) => {
       console.log('CLEANUP');
       clearTimeout(identifier);
     };
-  }, [emailState, passwordState]);
+  }, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
     // setEnteredEmail(event.target.value);
